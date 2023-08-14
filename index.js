@@ -1,18 +1,23 @@
 const qrFormEl = document.getElementById("qrForm");
-const qrimageEl = document.getElementById("qrimage");
+const qrImageEl = document.getElementById("qrImage");
 const qrContainerEl = document.getElementById("qrContainer");
 const qrInputTextEl = document.getElementById("qrInputText");
 const generateBtnEl = document.getElementById("generateBtn");
 
 const renderQRCode = (url) => {
   if (!url) return;
-  generateBtnEl.innterText = "Generating QR Code...";
-  qrimageEl.src = url;
-  qrContainerEl.classList.add("show");
+  generateBtnEl.innerText = "Generating Qr Code...";
+  qrImageEl.src = url;
 
-  qrimageEl.addEventListener("load", () => {
-    generateBtnEl.innterText = "Generate QR Code";
-  });
+  const onImageLoad = () => {
+    const interval = setInterval(() => {
+      qrContainerEl.classList.add("show");
+      clearInterval(interval);
+      generateBtnEl.innerText = "Genrate QR Code";
+    }, 500);
+  };
+
+  qrImageEl.addEventListener("load", onImageLoad);
 };
 
 qrFormEl.addEventListener("submit", (event) => {
@@ -20,14 +25,10 @@ qrFormEl.addEventListener("submit", (event) => {
 
   const formData = new FormData(qrFormEl);
   const text = formData.get("qrText");
-  const qrCodeUrl =
-    "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${text}}";
-
-  console.log("text", text);
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${text}`;
 
   renderQRCode(qrCodeUrl);
 });
-
 qrInputTextEl.addEventListener("keyup", () => {
   if (!qrInputTextEl.value.trim()) {
     qrContainerEl.classList.remove("show");
